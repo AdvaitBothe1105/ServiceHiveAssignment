@@ -20,7 +20,7 @@ export const verifyToken = (req: Request, _res: Response, next: NextFunction): v
 
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as AuthTokenPayload;
-    req.user = { id: payload.sub, role: payload.role, email: payload.email };
+    req.user = { id: payload.sub, role: payload.role, email: payload.email, exp: payload.exp };
     next();
   } catch (error) {
     next(new HttpError(401, "Unauthorized"));
