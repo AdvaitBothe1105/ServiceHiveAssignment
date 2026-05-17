@@ -6,6 +6,7 @@ import { env } from "./config/env";
 import { logger } from "./utils/logger";
 import { authRouter } from "./routes/auth.routes";
 import { leadRouter } from "./routes/lead.routes";
+import { userRouter } from "./routes/user.routes";
 import { HttpError } from "./utils/httpError";
 
 export const app = express();
@@ -17,6 +18,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/leads", leadRouter);
+app.use("/api/v1/users", userRouter);
 
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({

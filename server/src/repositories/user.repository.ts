@@ -15,5 +15,11 @@ export const userRepository = {
   }): Promise<UserDocument> {
     const doc = await UserModel.create(input);
     return doc.toObject();
-  }
+  },
+  async listAll(): Promise<UserDocument[]> {
+    return UserModel.find().sort({ createdAt: -1 }).lean();
+  },
+  async updateRoleById(id: string, role: "admin" | "sales"): Promise<UserDocument | null> {
+    return UserModel.findByIdAndUpdate(id, { role }, { new: true }).lean();
+  },
 };
