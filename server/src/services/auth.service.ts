@@ -55,10 +55,11 @@ export const authService = {
       throw new HttpError(401, "Invalid credentials");
     }
 
+    const expiresIn = env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"];
     const token = jwt.sign(
       { sub: existing._id.toString(), role: existing.role, email: existing.email },
       env.JWT_SECRET,
-      { expiresIn: env.JWT_EXPIRES_IN }
+      { expiresIn }
     );
 
     return { user: toPublicUser(existing), token };
