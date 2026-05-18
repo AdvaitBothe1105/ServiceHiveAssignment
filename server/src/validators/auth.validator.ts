@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { authSchema } from "@shared/validators";
+import { authSchema } from "../../shared/validators";
 
 export const registerSchema = authSchema.extend({
   name: z.string().min(1)

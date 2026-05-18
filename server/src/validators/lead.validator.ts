@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { leadSourceEnum, leadStatusEnum } from "@shared/validators";
+import { leadSourceEnum, leadStatusEnum } from "../../shared/validators";
 
 const sortEnum = z.enum(["latest", "oldest"]);
 

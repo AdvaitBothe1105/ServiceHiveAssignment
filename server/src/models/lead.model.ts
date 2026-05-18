@@ -1,5 +1,5 @@
 import { Schema, model, type InferSchemaType, type Types } from "mongoose";
-import { leadSourceEnum, leadStatusEnum } from "@shared/validators";
+import { leadSourceEnum, leadStatusEnum } from "../../shared/validators";
 
 const leadSchema = new Schema(
   {

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { connectDb } from "../config/db";
 import { LeadModel } from "../models/lead.model";
 import { UserModel } from "../models/user.model";
-import type { LeadSource, LeadStatus } from "@shared/validators";
+import type { LeadSource, LeadStatus } from "../../shared/validators";
 
 type SeedLead = {
   name: string;
