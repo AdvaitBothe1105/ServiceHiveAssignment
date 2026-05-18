@@ -20,7 +20,7 @@ const SEED_USERS: Array<{ name: string; email: string; role: "admin" | "sales" }
   { name: "Blake Sutton", email: "blake@signalops.test", role: "sales" },
   { name: "Cameron Vale", email: "cameron@signalops.test", role: "admin" },
   { name: "Dana Brooks", email: "dana@signalops.test", role: "sales" },
-  { name: "Ellis Grant", email: "ellis@signalops.test", role: "sales" }
+  { name: "Ellis Grant", email: "ellis@signalops.test", role: "admin" }
 ];
 
 const seed = async (): Promise<void> => {
