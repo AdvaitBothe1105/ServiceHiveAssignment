@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+import type { Readable } from "stream";
 import type { LeadDocument } from "../models/lead.model";
 import { leadRepository } from "../repositories/lead.repository";
 import { HttpError } from "../utils/httpError";
@@ -20,6 +22,13 @@ export type LeadListItem = {
 };
 
 export type LeadDetail = LeadListItem;
+
+const toAssignedObjectId = (
+  value: string | Types.ObjectId | null | undefined
+): Types.ObjectId | undefined => {
+  if (!value) return undefined;
+  return typeof value === "string" ? new Types.ObjectId(value) : value;
+};
 
 export const leadService = {
   async list(
@@ -127,7 +136,7 @@ export const leadService = {
       email: input.email ?? existing.email,
       status: input.status ?? existing.status,
       source: input.source ?? existing.source,
-      assignedTo: nextAssignedTo ?? existing.assignedTo
+      assignedTo: toAssignedObjectId(nextAssignedTo ?? existing.assignedTo)
     });
 
     if (!updated) {
@@ -191,6 +200,6 @@ export const leadService = {
     const cursor = leadRepository.streamWithFilters(filters, query.sort);
     const transform = createLeadCsvTransform();
 
-    return cursor.pipe(transform);
+    return (cursor as unknown as Readable).pipe(transform);
   }
 };

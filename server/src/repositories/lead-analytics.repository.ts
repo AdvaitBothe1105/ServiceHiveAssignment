@@ -1,3 +1,4 @@
+import type { PipelineStage } from "mongoose";
 import { LeadModel } from "../models/lead.model";
 import type { LeadFilters } from "./lead.repository";
 
@@ -93,7 +94,7 @@ export const leadAnalyticsRepository = {
     start.setDate(1);
     start.setHours(0, 0, 0, 0);
 
-    const pipeline: Record<string, unknown>[] = [
+    const pipeline: PipelineStage[] = [
       { $match: { ...match, createdAt: { $gte: start } } },
       {
         $group: {

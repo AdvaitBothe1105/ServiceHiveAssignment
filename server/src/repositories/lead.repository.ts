@@ -1,3 +1,4 @@
+import type { SortOrder } from "mongoose";
 import { LeadModel, type LeadDocument } from "../models/lead.model";
 import type { LeadListQuery } from "../validators/lead.validator";
 
@@ -25,7 +26,8 @@ export const leadRepository = {
       query.$text = { $search: filters.search };
     }
 
-    const sortBy = sort === "latest" ? { createdAt: -1 } : { createdAt: 1 };
+    const sortBy: Record<string, SortOrder> =
+      sort === "latest" ? { createdAt: -1 } : { createdAt: 1 };
     const skip = (page - 1) * limit;
 
     const [items, total] = await Promise.all([
@@ -70,7 +72,8 @@ export const leadRepository = {
       query.$text = { $search: filters.search };
     }
 
-    const sortBy = sort === "latest" ? { createdAt: -1 } : { createdAt: 1 };
+    const sortBy: Record<string, SortOrder> =
+      sort === "latest" ? { createdAt: -1 } : { createdAt: 1 };
     return LeadModel.find(query).sort(sortBy).cursor();
   }
 };
