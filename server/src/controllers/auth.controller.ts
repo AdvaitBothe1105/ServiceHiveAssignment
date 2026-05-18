@@ -3,6 +3,7 @@ import { env } from "../config/env";
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import { authService } from "../services/auth.service";
 import { HttpError } from "../utils/httpError";
+import { authCookieOptions } from "../utils/authCookie";
 import { parseDurationMs } from "../utils/parseDuration";
 import { validate } from "../utils/validate";
 
@@ -21,12 +22,7 @@ export const authController = {
     const { user, token } = await authService.login(input);
     const maxAge = parseDurationMs(env.JWT_EXPIRES_IN);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite: "lax",
-      ...(maxAge ? { maxAge } : {})
-    });
+    res.cookie("token", token, authCookieOptions(maxAge));
 
     res.status(200).json({
       success: true,
@@ -50,11 +46,7 @@ export const authController = {
     });
   },
   async logout(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite: "lax"
-    });
+    res.clearCookie("token", authCookieOptions());
 
     res.status(200).json({
       success: true,

@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ email: false, password: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { refresh } = useUser();
+  const { refresh, establishSession } = useUser();
   const { toast, showToast } = useToast();
 
   const validationErrors = useMemo(() => {
@@ -55,10 +55,13 @@ export default function LoginPage() {
 
     setIsSubmitting(true);
     try {
-      await apiFetch<LoginResponse>("/auth/login", {
+      const res = await apiFetch<LoginResponse>("/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password })
       });
+      if (res.data) {
+        establishSession(res.data);
+      }
       await refresh();
       showToast("Welcome back. Access granted.", "success");
       router.push("/dashboard");
