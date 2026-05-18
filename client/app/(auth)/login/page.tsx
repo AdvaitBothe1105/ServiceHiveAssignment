@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AuthShell from "../../../components/auth/AuthShell";
 import AuthFormField from "../../../components/auth/AuthFormField";
 import AuthToast from "../../../components/auth/AuthToast";
+import { useUser } from "../../../contexts/UserContext";
 import { useToast } from "../../../hooks/useToast";
 import { apiFetch } from "../../../lib/api";
 import { authSchema } from "@shared/validators";
@@ -26,6 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ email: false, password: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { refresh } = useUser();
   const { toast, showToast } = useToast();
 
   const validationErrors = useMemo(() => {
@@ -57,6 +59,7 @@ export default function LoginPage() {
         method: "POST",
         body: JSON.stringify({ email, password })
       });
+      await refresh();
       showToast("Welcome back. Access granted.", "success");
       router.push("/dashboard");
     } catch (error) {

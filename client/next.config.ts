@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+// client/next.config.ts
+import path from 'path'
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  turbopack: {
+    resolveAlias: {
+      '@shared': path.resolve(__dirname, '../shared'),
+    },
+  },
+}
 
-export default nextConfig;
+export default nextConfig

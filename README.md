@@ -64,5 +64,4 @@ See docs/API.md
 
 ## Notes
 
-- Docker compose is intentionally omitted per request.
 - All API responses follow { success, data, message, meta? }.

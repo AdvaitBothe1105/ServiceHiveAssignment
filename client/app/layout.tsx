@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Libre_Baskerville, Poppins } from "next/font/google";
+import { UserProvider } from "../contexts/UserContext";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -36,7 +37,7 @@ export default function RootLayout({
       className={`${poppins.variable} ${libreBaskerville.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        {children}
+        <UserProvider>{children}</UserProvider>
       </body>
     </html>
   );

@@ -4,10 +4,11 @@ import { useMemo, useState } from "react";
 import AuthShell from "../../../components/auth/AuthShell";
 import AuthFormField from "../../../components/auth/AuthFormField";
 import AuthToast from "../../../components/auth/AuthToast";
+import { useUser } from "../../../contexts/UserContext";
 import { useToast } from "../../../hooks/useToast";
 import { apiFetch } from "../../../lib/api";
 import { authSchema } from "@shared/validators";
-import type { z } from "zod";
+import { z } from "zod";
 
 type RegisterPayload = z.infer<typeof authSchema> & { name: string };
 
@@ -25,11 +26,12 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ name: false, email: false, password: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { refresh } = useUser();
   const { toast, showToast } = useToast();
 
   const validationErrors = useMemo(() => {
     const result = authSchema
-      .extend({ name: authSchema.shape.email })
+      .extend({ name: z.string().min(1, "Name is required") })
       .safeParse({ name, email, password });
 
     if (result.success) {
@@ -60,6 +62,7 @@ export default function RegisterPage() {
         method: "POST",
         body: JSON.stringify({ name, email, password })
       });
+      await refresh();
       showToast("Account created. Welcome aboard.", "success");
     } catch (error) {
       showToast(error instanceof Error ? error.message : "Registration failed", "error");
