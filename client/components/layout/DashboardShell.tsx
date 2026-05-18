@@ -1,3 +1,4 @@
+import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 
 type DashboardShellProps = {
@@ -7,8 +8,13 @@ type DashboardShellProps = {
 export default function DashboardShell({ children }: DashboardShellProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <TopBar />
-      <main className="mx-auto w-full max-w-[1440px] px-6 py-8 lg:px-8">{children}</main>
+      <div className="mx-auto grid min-h-screen w-full max-w-[1440px] grid-cols-[260px_1fr]">
+        <Sidebar />
+        <div className="flex min-h-screen flex-col">
+          <TopBar />
+          <main className="flex-1 bg-background px-8 py-8">{children}</main>
+        </div>
+      </div>
     </div>
   );
 }

@@ -33,14 +33,14 @@ export default function LoginPage() {
     if (result.success) {
       return {} as Record<keyof LoginPayload, string>;
     }
-    const fieldErrors: Record<string, string> = {};
+    const fieldErrors: Partial<Record<keyof LoginPayload, string>> = {};
     for (const issue of result.error.issues) {
-      const field = issue.path[0] !== undefined ? String(issue.path[0]) : "";
-      if (field && !fieldErrors[field]) {
-        fieldErrors[field] = issue.message;
+      const field = issue.path[0];
+      if (typeof field === "string" && !(field in fieldErrors)) {
+        fieldErrors[field as keyof LoginPayload] = issue.message;
       }
     }
-    return fieldErrors as Record<keyof LoginPayload, string>;
+    return fieldErrors;
   }, [email, password]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

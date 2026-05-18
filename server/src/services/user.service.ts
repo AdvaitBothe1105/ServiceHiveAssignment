@@ -1,5 +1,6 @@
 import { userRepository } from "../repositories/user.repository";
 import { HttpError } from "../utils/httpError";
+import type { UserListQuery } from "../validators/user.validator";
 
 export type PublicUser = {
   _id: string;
@@ -24,9 +25,9 @@ const toPublicUser = (user: {
 });
 
 export const userService = {
-  async list(): Promise<PublicUser[]> {
-    const users = await userRepository.listAll();
-    return users.map(toPublicUser);
+  async list(query: UserListQuery): Promise<{ items: PublicUser[]; total: number }> {
+    const { items, total } = await userRepository.findPaginated(query.page, query.limit);
+    return { items: items.map(toPublicUser), total };
   },
   async updateRole(
     targetId: string,

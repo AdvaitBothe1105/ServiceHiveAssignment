@@ -1,10 +1,37 @@
 import type { Request, Response, NextFunction } from "express";
 import { leadCreateSchema, leadListQuerySchema, leadUpdateSchema } from "../validators/lead.validator";
+import { leadAnalyticsService } from "../services/lead-analytics.service";
 import { leadService } from "../services/lead.service";
 import { HttpError } from "../utils/httpError";
 import { validate } from "../utils/validate";
 
 export const leadController = {
+  async stats(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const user = req.user;
+    if (!user) {
+      throw new HttpError(401, "Unauthorized");
+    }
+
+    const data = await leadAnalyticsService.getStats(user);
+    res.status(200).json({
+      success: true,
+      data,
+      message: "Lead stats fetched"
+    });
+  },
+  async analytics(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const user = req.user;
+    if (!user) {
+      throw new HttpError(401, "Unauthorized");
+    }
+
+    const data = await leadAnalyticsService.getAnalytics(user);
+    res.status(200).json({
+      success: true,
+      data,
+      message: "Lead analytics fetched"
+    });
+  },
   async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     const query = validate(leadListQuerySchema, req.query, "Invalid query parameters");
     const user = req.user;

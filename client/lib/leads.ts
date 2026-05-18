@@ -51,26 +51,12 @@ export const deleteLead = async (id: string): Promise<ApiResponse<Lead>> => {
   return apiFetch<Lead>(`/leads/${id}`, { method: "DELETE" });
 };
 
-const countByStatus = async (status?: LeadStatus): Promise<number> => {
-  const qs = status ? `?status=${status}&page=1&limit=1` : "?page=1&limit=1";
-  const res = await apiFetch<Lead[]>(`/leads${qs}`);
-  return res.meta?.total ?? 0;
-};
-
 export const fetchLeadStats = async (): Promise<LeadStats> => {
-  const [total, qualified, contacted, lost, recentRes] = await Promise.all([
-    countByStatus(),
-    countByStatus("qualified"),
-    countByStatus("contacted"),
-    countByStatus("lost"),
-    apiFetch<Lead[]>("/leads?page=1&limit=50&sort=latest")
-  ]);
-
-  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const newThisWeek =
-    recentRes.data?.filter((l) => new Date(l.createdAt).getTime() >= weekAgo).length ?? 0;
-
-  return { total, newThisWeek, qualified, contacted, lost };
+  const res = await apiFetch<LeadStats>("/leads/stats");
+  if (!res.data) {
+    throw new Error("Failed to fetch lead stats");
+  }
+  return res.data;
 };
 
 export const exportLeadsCsv = async (filters: LeadFilters): Promise<void> => {

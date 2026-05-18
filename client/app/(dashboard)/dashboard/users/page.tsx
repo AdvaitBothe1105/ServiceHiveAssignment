@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import PaginationBar from "../../../../components/dashboard/PaginationBar";
 import { useUser } from "../../../../contexts/UserContext";
 import { useToast } from "../../../../hooks/useToast";
 import { fetchUsers, updateUserRole } from "../../../../lib/users";
@@ -10,6 +11,8 @@ import { RoleBadge } from "../../../../components/ui/Badge";
 import SkeletonRow from "../../../../components/ui/SkeletonRow";
 import Toast from "../../../../components/ui/Toast";
 
+const PAGE_LIMIT = 10;
+
 export default function UsersPage() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
@@ -17,6 +20,23 @@ export default function UsersPage() {
   const [users, setUsers] = useState<PublicUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetchUsers(page, PAGE_LIMIT);
+      setUsers(res.data ?? []);
+      setTotal(res.meta?.total ?? 0);
+      setTotalPages(res.meta?.totalPages ?? 1);
+    } catch {
+      showToast("Something went wrong", "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, showToast]);
 
   useEffect(() => {
     if (!userLoading && !user) router.replace("/login");
@@ -25,12 +45,8 @@ export default function UsersPage() {
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-    setLoading(true);
-    void fetchUsers()
-      .then((res) => setUsers(res.data ?? []))
-      .catch(() => showToast("Something went wrong", "error"))
-      .finally(() => setLoading(false));
-  }, [user, showToast]);
+    void loadUsers();
+  }, [user, loadUsers]);
 
   const handleRoleChange = async (target: PublicUser, role: "admin" | "sales") => {
     setUpdatingId(target._id);
@@ -57,6 +73,9 @@ export default function UsersPage() {
       <header className="mb-8">
         <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Admin</p>
         <h1 className="mt-2 text-3xl font-semibold">Users</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {total} users total · {PAGE_LIMIT} per page
+        </p>
       </header>
 
       <section className="overflow-hidden rounded-3xl border border-border bg-card/90 shadow-sm">
@@ -71,7 +90,7 @@ export default function UsersPage() {
           </thead>
           <tbody>
             {loading
-              ? Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)
+              ? Array.from({ length: PAGE_LIMIT }).map((_, i) => <SkeletonRow key={i} />)
               : users.map((u) => (
                   <tr key={u._id} className="border-b border-border/50">
                     <td className="px-4 py-4 font-semibold">{u.name}</td>
@@ -96,6 +115,15 @@ export default function UsersPage() {
                 ))}
           </tbody>
         </table>
+        {!loading && users.length > 0 ? (
+          <PaginationBar
+            page={page}
+            totalPages={totalPages}
+            total={total}
+            limit={PAGE_LIMIT}
+            onPageChange={setPage}
+          />
+        ) : null}
       </section>
     </>
   );

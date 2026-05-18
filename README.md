@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Leads Dashboard
 
-## Getting Started
+Full-stack Lead Management Dashboard built with MERN + TypeScript. Designed to match the internship assignment requirements with clean architecture, reusable UI, and production-grade API patterns.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- JWT auth (register, login, logout, protected routes, httpOnly cookies)
+- RBAC (admin / sales)
+- Leads CRUD + single-lead detail view
+- Advanced filters (status, source, search name/email, sort latest/oldest)
+- Debounced search
+- Backend pagination with metadata (limit 10)
+- CSV export (admin only)
+- Analytics + stats endpoints
+- Loading, empty, and error states
+- Dark mode support
+
+## Tech Stack
+
+Frontend: Next.js (App Router), React, TypeScript, Tailwind CSS
+Backend: Node.js, Express, TypeScript, MongoDB + Mongoose
+
+## Project Structure
+
+- client: Next.js UI
+- server: Express API
+- shared: Zod schemas used by both client and server
+
+## Setup
+
+1) Install dependencies
+```
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2) Configure environment
+- Copy .env.example to server/.env
+- Copy client/.env.example to client/.env.local
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3) Run dev servers (client + server)
+```
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Optional seed data
+```
+npm --workspace server run seed:users
+npm --workspace server run seed:leads
+```
 
-## Learn More
+## Scripts (root)
 
-To learn more about Next.js, take a look at the following resources:
+- npm run dev: start client + server
+- npm run build: build client + server
+- npm run lint: lint client + server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See docs/API.md
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Add deployment link here if available.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+
+- Docker compose is intentionally omitted per request.
+- All API responses follow { success, data, message, meta? }.

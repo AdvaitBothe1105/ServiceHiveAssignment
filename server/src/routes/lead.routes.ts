@@ -9,6 +9,8 @@ export const leadRouter = Router();
 leadRouter.get("/", verifyToken, asyncWrapper(leadController.list));
 leadRouter.post("/", verifyToken, asyncWrapper(leadController.create));
 leadRouter.get("/export", verifyToken, requireRole("admin"), asyncWrapper(leadController.exportCsv));
+leadRouter.get("/stats", verifyToken, asyncWrapper(leadController.stats));
+leadRouter.get("/analytics", verifyToken, asyncWrapper(leadController.analytics));
 leadRouter.get("/:id", verifyToken, asyncWrapper(leadController.getById));
 leadRouter.put("/:id", verifyToken, asyncWrapper(leadController.update));
 leadRouter.delete("/:id", verifyToken, requireRole("admin"), asyncWrapper(leadController.remove));
